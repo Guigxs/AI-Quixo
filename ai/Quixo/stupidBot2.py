@@ -38,11 +38,9 @@ class Server:
 
         if first%2 == 0: #Premier joueur
             power = 0
-            choice = AI().makeChoice(power, game)
-            print("Liste des choix :", choice)
             print("First player with: X ({}) !".format(power))
-            cube = AI().cube(power, game, choice)
-            direction = AI().direction(power, game, cube)
+            cube = AI().bestCube(power, game)
+            direction = AI().bestDirection(power, game, cube)
             print("-----------------------------------")
             print("Send : X in", cube, "from", direction)
             maj = playTheGame().move(game, cube, direction, power)
@@ -52,11 +50,9 @@ class Server:
 
         elif first%2 == 1: #Second joueur
             power = 1
-            choice = AI().makeChoice(power, game)
-            print("Liste des choix :", choice)
             print("Second player with: O ({}) !".format(power))
-            cube = AI().cube(power, game, choice)
-            direction = AI().direction(power, game, cube)
+            cube = AI().bestCube(power, game)
+            direction = AI().bestDirection(power, game, cube)
             print("-----------------------------------")
             print("Send : O in", cube, "from", direction)
             maj = playTheGame().move(game, cube, direction, power)
@@ -72,7 +68,7 @@ class playTheGame():
     def move(self, game, cube, dir, power):
         while cube >= 0:
             if cube not in self.forbidden[dir]:
-                print("Move cube")
+                print("Moving cube :{}...".format(cube))
                 game[cube] = game[(cube)+self.increment[dir]]
                 cube += self.increment[dir]
             else :
@@ -99,52 +95,87 @@ class AI():
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
 
-    def makeChoice(self, power, game):
+    def win(self, power, game): #Test si le jeu est gangant ou non 
+        for i in range(len(self.gagne)):
+            win = 0
+            for j in self.gagne[i]:
+                if game[j] == power:
+                    win += 1
+            if win == 5:
+                print("Ligne gagnante en:", i)
+                return True
+
+    def bestCube(self, power, game):
+        print("Searching for the best cube...")
+        jeu = game
         choice = []
-        for i in range(len(game)):
-            if i in self.firstList:
-                if game[i] == power or game[i] == None:
-                    choice.append(i)
-        
-        return choice
 
-    def win(self, power, game):
-        tableau = np.resize(game, (5, 5))
-        sommeCol = np.sum(tableau[:, :], axis = 1)
-        sommeLign = np.sum(tableau[:, :], axis = 0)
-        sommeDiag = np.trace(tableau)
-        print(sommeDiag)
+        for i in self.firstList:
+            if jeu[i] == None or jeu[i] == power:
+                print("Try for", i)
+                choice.append(i)
+                y = jeu[i]
+                jeu[i] = power
+                
+                if self.win(power, jeu) == True:
+                    print("I CHOOSE MY CUBE !")
+                    return i
 
+                jeu[i] = y
 
-        for i in sommeCol :
-            if i == 5*power :
-                print("Win")
-        
-        for b in sommeLign :
-            if i = 5*power:
-                print("win")
-        #if np.sum(tableau[:, 0]) == 5*power:
-        #    return True
-        #return False
+        #Bloquage de l'adversaire
+        print("Trying to block...")
+        if power == 1:
+            power = 0
+        else:
+            power = 1
 
-    def cube(self, player, game, choice):
-        print("Random cube is coming...")
-        choixCube = random.choice(choice)
-        print("Cube :", choixCube)
+        for i in self.firstList:
+            if jeu[i] == None or jeu[i] == power:
+                print("Try for", i)
+                y = jeu[i]
+                jeu[i] = power
+                
+                if self.win(power, jeu) == True:
+                    print("I BLOCK WITH THE CUBE!")
+                    return i
 
-        return choixCube
+                jeu[i] = y
+
+        return random.choice(choice)
     
-    def direction(self, player, game, cube):
-        choixDirection = random.choice(self.firstDirections)
-        print("Check if {} is forbidden...".format(choixDirection))
-        if cube in self.forbidden[choixDirection]:
-            print("Forbiden!")
-            print("Retry...")
-            return self.direction(player, game, cube)
-            
-        print("Direction ok!")
-        
-        return choixDirection
+    def bestDirection(self, power, game, cube):
+        print("Searching for the best direction...")
+        choice = []
+
+        for i in self.firstDirections:
+            if cube not in self.forbidden[i]:
+                choice.append(i)
+                jeu = playTheGame().move(game, cube, i, power)
+
+                if self.win(power, jeu) == True:
+                    print("I CHOOSE MY DIRECTION !")
+                    return i
+
+                jeu = game
+        #Bloquage de l'adversaire
+        if power == 1:
+            power = 0
+        else:
+            power = 1
+
+        for i in self.firstDirections:
+            if cube not in self.forbidden[i]:
+                jeu = playTheGame().move(game, cube, i, power)
+
+                if self.win(power, jeu) == True:
+                    print("I BLOCK WITH THE DIRECTION !")
+                    return i
+
+                jeu = game
+
+        return random.choice(choice)
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
