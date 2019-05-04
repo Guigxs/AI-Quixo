@@ -20,7 +20,7 @@ class Server:
         game = body["game"]
         print("")
         print("######################################")
-        print("############# Stupid bot #############")
+        print("############# Smart bot #############")
         print("######################################")
         print("")
         print("--------------------------------------")
@@ -102,7 +102,6 @@ class AI():
                 if game[j] == power:
                     win += 1
             if win == 5:
-                print("Ligne gagnante en:", i)
                 return True
 
     def bestCube(self, power, game):
