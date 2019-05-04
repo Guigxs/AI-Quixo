@@ -9,4 +9,4 @@ This AI is based on the *forward move*.
 The python script is in the `/ai` directory
 
 
-#### By Guillaume Caestecker ~@Arkhesus (17036) & Guillaume Bouillon ~@Guigxs(17076)
+#### By Guillaume Caestecker *@Arkhesus* (17036) & Guillaume Bouillon *@Guigxs* (17076)
