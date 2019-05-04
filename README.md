@@ -1,26 +1,12 @@
-# AIGameRunner
+# AI-Quixo
 
-## Installation
+## Strategy
 
-Clone the repository on your computer
+This AI is based on the *forward move*.
 
-## Add Games
+## Location   
 
-Add a script in the `/public/games` directory
+The python script is in the `/ai` directory
 
-The App will use the `current.js` game
 
-## Create an AI
-
-Create a Server based on those in the `/ai` directory
-
-## Start the Front End
-
-The `server.py` file is a small server that serve the frontend.
-
-It need python 3.X and `cherrypy`. You can start it with:
-
-```
-python server.py
-```
-
+### Guillaume Caestecker ~@Arkhesus (17036) & Guillaume Bouillon ~@Guigxs(17076)
