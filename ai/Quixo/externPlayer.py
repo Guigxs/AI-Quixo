@@ -39,8 +39,8 @@ class Server:
         if first%2 == 0: #Premier joueur
             power = 0
             print("First player with: X ({}) !".format(power))
-            cube = input("Cube : ")
-            direction = input("Direction :")
+            cube = int(input("Cube : "))
+            direction = str(input("Direction : "))
             print("-----------------------------------")
             print("Send : X in", cube, "from", direction)
             print("-----------------------------------")
@@ -49,8 +49,8 @@ class Server:
         elif first%2 == 1: #Second joueur
             power = 1
             print("Second player with: O ({}) !".format(power))
-            cube = input("Cube : ")
-            direction = input("Direction :")
+            cube = int(input("Cube : "))
+            direction = str(input("Direction : "))
             print("-----------------------------------")
             print("Send : O in", cube, "from", direction)
             print("-----------------------------------")
