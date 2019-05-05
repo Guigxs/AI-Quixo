@@ -19,10 +19,9 @@ gagne = [
                         [ 4,  9, 14, 19, 24],
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
-for i in range(len(gagne)):
-    win = 0
-    for j in gagne[i]:
-        if game[j] == 0:
-            win += 1
-    if win == 5:
-        print("win ligne:", i)
+
+def coucou(salut):
+    if salut == 3:
+        return 12
+
+print(coucou(34))
