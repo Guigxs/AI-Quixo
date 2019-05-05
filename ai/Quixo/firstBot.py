@@ -43,10 +43,8 @@ class Server:
             direction = AI().bestDirection(power, game, cube)
             print("-----------------------------------")
             print("Send : X in", cube, "from", direction)
-            print("-----------------------------------")
             maj = playTheGame().move(game, cube, direction, power)
-            print("---Shape of the game---")
-            print(np.resize(maj, (5, 5)))
+            print(maj)
             print("-----------------------------------")
             return {'move' :{'cube' : cube, 'direction': direction}}
 
@@ -57,9 +55,7 @@ class Server:
             direction = AI().bestDirection(power, game, cube)
             print("-----------------------------------")
             print("Send : O in", cube, "from", direction)
-            print("-----------------------------------")
             maj = playTheGame().move(game, cube, direction, power)
-            print("---Shape of the game---")
             print(np.resize(maj, (5, 5)))
             print("-----------------------------------")
             return {'move' :{'cube' : cube, 'direction': direction}}
@@ -82,7 +78,6 @@ class playTheGame():
 class AI():
     def __init__(self, *args, **kwargs):
         self.firstList = [0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24]
-        self.center = [6, 7, 8, 11, 12, 13,16, 17, 18]
         self.firstDirections = ['N', 'S', 'E', 'W']
         self.forbidden = {'E':[4, 9, 14, 19, 24], 'W':[0, 5, 10, 15, 20], 'N':[0, 1, 2, 3, 4], 'S':[20, 21, 22, 23, 24]}
         self.increment = {'N': -5, 'S': 5, 'E': 1, 'W': -1}
@@ -106,70 +101,49 @@ class AI():
             for j in self.gagne[i]:
                 if game[j] == power:
                     win += 1
-
             if win == 5:
-                return win 
+                return True
 
-            if win == 4:
-                return win
-
-    def bestCube(self, power, game): #Choix du meilleur cube
+    def bestCube(self, power, game):
         print("Searching for the best cube...")
         jeu = game
         choice = []
 
         for i in self.firstList:
-            if jeu[i] == None or jeu[i] == power: #Si case sur la ligne est vide ou est à moi
-                print("Try {} for {}".format(power, i))
+            if jeu[i] == None or jeu[i] == power:
+                print("Try for", i)
                 choice.append(i)
                 y = jeu[i]
                 jeu[i] = power
-
-                won = self.win(power, jeu)
-                jeu[i] = y
-
-                if won == 5:
-                    print("I CHOOSE MY CUBE : {}!".format(i))
+                
+                if self.win(power, jeu) == True:
+                    print("I CHOOSE MY CUBE !")
                     return i
 
-                else:
-                    print("But we may need to block... (cube)")
-                    needToBlock = self.blockCube(power, jeu)
+                jeu[i] = y
 
-                    if needToBlock == None:
-                        print("No need to block ! (cube)")
-
-                    else:
-                        print("I need to block the cube : {} ! (cube)".format(needToBlock))
-                        return needToBlock
-                
-        nextCube = random.choice(choice)
-        print("")
-        print("No preference")
-        print("A random cube is coming... : {}".format(nextCube))
-        return nextCube
-
-    def blockCube(self, power, game): #Bloquage de l'adversaire
-        print("---Trying to block (cube)...---")
-        jeu = game
+        #Bloquage de l'adversaire
+        print("Trying to block...")
         if power == 1:
-            otherPower = 0
+            power = 0
         else:
-            otherPower = 1
+            power = 1
 
         for i in self.firstList:
-            if jeu[i] == None or jeu[i] == otherPower:
-                print("Try {} for {}".format(otherPower, i))
+            if jeu[i] == None or jeu[i] == power:
+                print("Try for", i)
                 y = jeu[i]
-                jeu[i] = otherPower
+                jeu[i] = power
+                
+                if self.win(power, jeu) == True:
+                    print("I BLOCK WITH THE CUBE!")
+                    return i
 
-                won = self.win(otherPower, jeu)
-                jeu[i] = y                
-                if won in [4, 5]:
-                    print("The other can win with :", i)
-                    return i  
+                jeu[i] = y
+
+        return random.choice(choice)
     
-    def bestDirection(self, power, game, cube): #Choix de la meilleur direction
+    def bestDirection(self, power, game, cube):
         print("Searching for the best direction...")
         choice = []
 
@@ -177,34 +151,13 @@ class AI():
             if cube not in self.forbidden[i]:
                 choice.append(i)
                 jeu = playTheGame().move(game, cube, i, power)
-                print("")
 
-                won = self.win(power, jeu)
-                jeu = game
-                if won == 5:
+                if self.win(power, jeu) == True:
                     print("I CHOOSE MY DIRECTION !")
                     return i
 
-                else:
-                    print("But we may need to block... (direction)")
-                    needToBlock = self.blockDirection(power, jeu, cube)
-
-                    if needToBlock == None:
-                        print("No need to block! (direction)")
-
-                    else:
-                        print("Need To block ! (direction)")
-                        return needToBlock
-
-        nextDirection = random.choice(choice)
-        print("")
-        print("No preference")
-        print("A random direction is coming... : {}".format(nextDirection))
-        return nextDirection
-
-    def blockDirection(self, power, game, cube): #Bloquage de l'adversaire
-        print("---Trying to block (direction)...---")
-        jeu = game
+                jeu = game
+        #Bloquage de l'adversaire
         if power == 1:
             power = 0
         else:
@@ -214,10 +167,14 @@ class AI():
             if cube not in self.forbidden[i]:
                 jeu = playTheGame().move(game, cube, i, power)
 
-                won = self.win(power, jeu)
-                if won == 4:
+                if self.win(power, jeu) == True:
                     print("I BLOCK WITH THE DIRECTION !")
                     return i
+
+                jeu = game
+
+        return random.choice(choice)
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
