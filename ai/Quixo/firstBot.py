@@ -28,6 +28,10 @@ class Server:
         print(np.resize(game, (5, 5)))
         
         first = len(body['moves'])
+        for i in body['moves']:
+            for j in i:
+                if j == 'badMove' or j == 'timeOut':
+                    first -= 1
 
         print("")
         print("##########", first, "move(s) #########")   
@@ -44,7 +48,7 @@ class Server:
             print("-----------------------------------")
             print("Send : X in", cube, "from", direction)
             maj = playTheGame().move(game, cube, direction, power)
-            print(maj)
+            print(np.resize(maj, (5, 5)))
             print("-----------------------------------")
             return {'move' :{'cube' : cube, 'direction': direction}}
 
@@ -102,7 +106,10 @@ class AI():
                 if game[j] == power:
                     win += 1
             if win == 5:
-                return True
+                return win
+
+            if win == 4:
+                return win
 
     def bestCube(self, power, game):
         print("Searching for the best cube...")
@@ -116,30 +123,36 @@ class AI():
                 y = jeu[i]
                 jeu[i] = power
                 
-                if self.win(power, jeu) == True:
+                if self.win(power, jeu) == 5:
                     print("I CHOOSE MY CUBE !")
                     return i
 
                 jeu[i] = y
 
-        #Bloquage de l'adversaire
+        # Bloquage de l'adversaire
         print("Trying to block...")
         if power == 1:
-            power = 0
+            otherPower = 0
         else:
-            power = 1
+            otherPower = 1
 
-        for i in self.firstList:
-            if jeu[i] == None or jeu[i] == power:
-                print("Try for", i)
-                y = jeu[i]
-                jeu[i] = power
-                
-                if self.win(power, jeu) == True:
-                    print("I BLOCK WITH THE CUBE!")
-                    return i
+        jeuReshape = jeu.reshape(25)
+        indList = np.where(jeuReshape == otherPower)
+        print(indList[0])
 
-                jeu[i] = y
+        for l in range(len(self.gagne)):
+            if len(indList & self.gagne[l]) >= 3:
+                if 0 <= l <= 4:
+                    pass
+
+                elif 5 <= l <= 9:
+                    pass
+
+                else:
+                    pass
+
+                   
+
 
         return random.choice(choice)
     
@@ -150,30 +163,38 @@ class AI():
         for i in self.firstDirections:
             if cube not in self.forbidden[i]:
                 choice.append(i)
+                print("TEST\n")
                 jeu = playTheGame().move(game, cube, i, power)
 
-                if self.win(power, jeu) == True:
+                if self.win(power, jeu) == 5:
                     print("I CHOOSE MY DIRECTION !")
                     return i
 
                 jeu = game
         #Bloquage de l'adversaire
-        if power == 1:
-            power = 0
-        else:
-            power = 1
+        # if power == 1:
+        #     power = 0
+        # else:
+        #     power = 1
 
-        for i in self.firstDirections:
-            if cube not in self.forbidden[i]:
-                jeu = playTheGame().move(game, cube, i, power)
+        # for i in self.firstDirections:
+        #     if cube not in self.forbidden[i]:
+        #         jeu = playTheGame().move(game, cube, i, power)
 
-                if self.win(power, jeu) == True:
-                    print("I BLOCK WITH THE DIRECTION !")
-                    return i
+        #         if self.win(power, jeu) in [4, 5]:
+        #             print("I BLOCK WITH THE DIRECTION !")
+        #             return i
 
-                jeu = game
+        #         jeu = game
 
         return random.choice(choice)
+
+    def commun(self, a, b):
+        l = []
+        for i in a:
+            if i in b:
+                l.append(i)
+        return l
 
 
 if __name__ == "__main__":
