@@ -1,6 +1,8 @@
 import numpy as np
 import random
-game =[0, 0, 0, 0, 0, 0, 0, None, 0, None, 0, None, 1, None, None, 0, None, None, None, None, 0, None, None, None, None]
+game =[0, 0, 0, 0, 0, 0, 0, 1, 0, None, 0, None, 1, None, None, 0, None, None, None, None, 0, None, None, None, None]
+a =np.resize(game, 25)
+new = np.ones((25))
 
 matrix = list(range(25))
 inc = {'N': 5, 'S': -5, 'E': 1, 'W': -1}
@@ -20,8 +22,13 @@ gagne = [
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
 
-def coucou(salut):
-    if salut == 3:
-        return 12
 
-print(coucou(34))
+u = [1, 2, 3, 4]
+w = [1, 8, 9]
+
+a = forbidden["N"].copy()
+
+a = forbidden["N"].copy().extend(forbidden["S"])
+
+print(a)
+print(forbidden)

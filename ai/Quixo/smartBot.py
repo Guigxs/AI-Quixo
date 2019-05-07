@@ -107,11 +107,12 @@ class AI():
                 if game[j] == power:
                     win += 1
 
-            if win == 5:
-                return win 
+            # if win == 5:
+            #     return win 
 
-            if win == 4:
-                return win
+
+            # if win == 4:
+            #     return win
 
     def bestCube(self, power, game): #Choix du meilleur cube
         print("Searching for the best cube...")
