@@ -27,7 +27,11 @@ class Server:
         print("State of the game :")
         print(np.resize(game, (5, 5)))
         
-        first = len(body['moves'])
+        first = len(body['moves'])# Check nbre de coups
+        for i in body['moves']:
+            for j in i:
+                if j == 'badMove' or j == 'timeOut':
+                    first -= 1
 
         print("")
         print("##########", first, "move(s) #########")   
@@ -37,6 +41,7 @@ class Server:
 
 
         if first%2 == 0: #Premier joueur
+            print("-------", body['moves'], "-------")
             power = 0
             print("First player with: X ({}) !".format(power))
             cube = int(input("Cube : "))
