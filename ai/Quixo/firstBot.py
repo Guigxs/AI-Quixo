@@ -144,34 +144,36 @@ class AI():
 
         for l in range(len(self.gagne)):
             if len(self.commun(indList, self.gagne[l])) >= 3:
+                print("Il faut casser la chaine !")
                 if 0 <= l <= 4:
                     print("N ou S")
                     a = self.forbidden["N"].copy()
                     for cube in (a + self.forbidden["S"]):
                         for direction in ["N", "S"]:
-                            won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
-                            if won < 3: 
-                                
-                                return (cube, direction)
+                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
+                                won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
+                                if won < 3: 
+                                    print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
+                                    return (cube, direction)
 
                 elif 5 <= l <= 9:
                     print("E ou W")
                     a = self.forbidden["E"].copy()
                     for cube in (a + self.forbidden["W"]):
                         for direction in ["E", "W"]:
-                            won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
-                            if won < 3: 
-                                
-                                return (cube, direction)
+                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
+                                won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
+                                if won < 3: 
+                                    return (cube, direction)
 
                 else:
                     print("N ou S ou E ou W")
                     for cube in (self.firstList):
                         for direction in ["N", "S", "E", "W"]:
-                            won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
-                            if won < 3: 
-                                
-                                return (cube, direction)
+                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
+                                won = self.win(otherPower, playTheGame().move(jeu, cube, direction, power)) 
+                                if won < 3: 
+                                    return (cube, direction)
         
         cube = random.choice(choice)
         print("Random cube...", cube)
