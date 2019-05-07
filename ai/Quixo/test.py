@@ -22,13 +22,3 @@ gagne = [
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
 
-
-u = [1, 2, 3, 4]
-w = [1, 8, 9]
-
-a = forbidden["N"].copy()
-
-a = forbidden["N"].copy().extend(forbidden["S"])
-
-print(a)
-print(forbidden)
