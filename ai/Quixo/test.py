@@ -24,7 +24,5 @@ gagne = [
 
 L = [1, 3, 4, 4]
 
-a = max(L)
-
-print(L.index(a))
-
+L.remove(3)
+print(L)

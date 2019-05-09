@@ -38,29 +38,37 @@ class Server:
         print("--------------------------------------")
         print("")
         print("--Logs:--")
-
+    
+        winPhrases = ["Prends-en de la graine", "Appelle-moi quand tu seras coder !", "Quand tu m’arriveras à la cheville, tu pourras faire mes lacets", "Les gagnants trouvent des moyens et les perdants des excuses", "Tu m’as vendu du rêve j’aimerais être remboursé !", "Je suis rapide comme le guépard !", "Je vais gagner, tu vas perdre... Faut pas chercher plus loin !"]
 
         if first%2 == 0: #Premier joueur
             power = 0
             print("First player with: X ({}) !".format(power))
-            cube, direction = AI().bestCube(power, game)
+            cube, direction, phrase = AI().bestCube(power, game)
+            if phrase == None:
+                phrase = random.choice(winPhrases)
+                winPhrases.remove(phrase)
+                
             print("-----------------------------------")
             print("Send : X in", cube, "from", direction)
             maj = playTheGame().move(game, cube, direction, power)
             print(np.resize(maj, (5, 5)))
             print("-----------------------------------")
-            return {'move' :{'cube' : cube, 'direction': direction}}
+            return {'move' :{'cube' : cube, 'direction': direction}, "message" : phrase}
 
         elif first%2 == 1: #Second joueur
             power = 1
             print("Second player with: O ({}) !".format(power))
-            cube, direction = AI().bestCube(power, game)
+            cube, direction, phrase = AI().bestCube(power, game)
+            if phrase == None:
+                phrase = random.choice(winPhrases)
+                winPhrases.remove(phrase)
             print("-----------------------------------")
             print("Send : O in", cube, "from", direction)
             maj = playTheGame().move(game, cube, direction, power)
             print(np.resize(maj, (5, 5)))
             print("-----------------------------------")
-            return {'move' :{'cube' : cube, 'direction': direction}}
+            return {'move' :{'cube' : cube, 'direction': direction}, "message" : phrase}
 
 class playTheGame():
     def __init__(self, *args, **kwargs):
@@ -147,7 +155,7 @@ class AI():
                             if won == 5: 
                                 print("ON A GAGNE !")
                                 print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                                return (cube, direction)
+                                return (cube, direction, "J'ai gagné grand fou")
             else:
                 print("On ne peut pas ganger mtn")
                 if i <= 4:
@@ -173,7 +181,7 @@ class AI():
                                 print('Won :', won) 
                                 if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                                    return (cube, direction)
+                                    return (cube, direction, None)
 
                 elif 5 <= i <= 9:
                     print("E ou W")
@@ -186,7 +194,7 @@ class AI():
                                 print('Won :', won)
                                 if won < x:
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
-                                    return (cube, direction)
+                                    return (cube, direction, None)
 
                 else:
                     print("N ou S ou E ou W")
@@ -198,7 +206,7 @@ class AI():
                                 print('Won :', won)
                                 if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                                    return (cube, direction)
+                                    return (cube, direction, None)
             # elif x == 3:
             #     if 0 <= i <= 4:
             #         print("N ou S")
@@ -207,6 +215,7 @@ class AI():
             #             for direction in ["N", "S"]:
             #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
             #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     jeu = game.copy()
             #                     print('Won :', won) 
             #                     if won < x: 
             #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
@@ -219,6 +228,7 @@ class AI():
             #             for direction in ["E", "W"]:
             #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
             #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     jeu = game.copy()
             #                     print('Won :', won)
             #                     if won < x:
             #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
@@ -230,6 +240,7 @@ class AI():
             #             for direction in ["N", "S", "E", "W"]:
             #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
             #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     jeu = game.copy()
             #                     print('Won :', won)
             #                     if won < x: 
             #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
@@ -251,13 +262,13 @@ class AI():
                         if won > maxi: 
                             print("La ligne se construit")
                             print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                            return (cube, direction)
+                            return (cube, direction, None)
         else:
             cube = random.choice(choice)
             print("Random cube...", cube)
             direction = self.bestDirection(power, jeu, cube)
             print("Chox d'une direction random en fonction du cube :", direction)
-            return (cube, direction)
+            return (cube, direction, "Alléatoire")
     
     def bestDirection(self, power, game, cube):
         print("Searching for the best direction...")
