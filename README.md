@@ -4,7 +4,7 @@
 
 A chaque coups, l'IA a un chemin de réflexion : 
 
-**1.** Analyse si le bot peut gagner : 
+__1.__ Analyse si le bot peut gagner : 
     * Si oui : Application du mouvement gagnant
     * Si non : Poursuite du chemin de reflexion (étape 2.)
 **2.** Analyse si l'adversaire peut gagner au coup suivant : 
