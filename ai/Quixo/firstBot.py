@@ -109,18 +109,14 @@ class AI():
                     win += 1
             return win
 
-    def brokenList(self, power, game, ligne, won):
+    def checkList(self, power, game, ligne):
         matrix = np.resize(game, 25)
         matrixDesIndices = np.where(matrix == power)[0]
         listeDesIndices = matrixDesIndices.tolist()
         
         a = len(self.commun(listeDesIndices, ligne))
         print("Liste des indices:", self.commun(listeDesIndices, ligne))
-        if a < won:
-            return a
-        else:
-            return 6
-
+        return a
 
     def bestCube(self, power, game):
         print("Searching for the best cube...")
@@ -164,9 +160,9 @@ class AI():
                     for cube in (a + self.forbidden["S"]):
                         for direction in ["N", "S"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.brokenList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l], x)
+                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l])
                                 print('Won :', won) 
-                                if won < 3: 
+                                if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                     return (cube, direction)
 
@@ -176,9 +172,9 @@ class AI():
                     for cube in (a + self.forbidden["E"]):
                         for direction in ["E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.brokenList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l], x)
+                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l])
                                 print('Won :', won)
-                                if won < 3:
+                                if won < x:
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
                                     return (cube, direction)
 
@@ -187,9 +183,9 @@ class AI():
                     for cube in (self.firstList):
                         for direction in ["N", "S", "E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.brokenList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l], x)
+                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[l])
                                 print('Won :', won)
-                                if won < 3: 
+                                if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                     return (cube, direction)
         
