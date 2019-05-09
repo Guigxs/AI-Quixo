@@ -22,4 +22,10 @@ gagne = [
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
 
-print(int(13/5))
+def salut(a, b):
+    if a + b == 2:
+        return a, b
+    else:
+        return False
+    
+print(salut(1, 3))
