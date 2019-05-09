@@ -39,7 +39,7 @@ class Server:
         print("")
         print("--Logs:--")
     
-        winPhrases = ["Prends-en de la graine", "Appelle-moi quand tu seras coder !", "Quand tu m’arriveras à la cheville, tu pourras faire mes lacets", "Les gagnants trouvent des moyens et les perdants des excuses", "Tu m’as vendu du rêve j’aimerais être remboursé !", "Je suis rapide comme le guépard !", "Je vais gagner, tu vas perdre... Faut pas chercher plus loin !"]
+        winPhrases = ["Ne pas vendre la peau de l'ours avant de l'avoir tuer", "Prends-en de la graine", "Qu'on m'apporte un extincteur... Je suis on fire", "Appelle-moi quand tu seras coder !", "Quand tu m’arriveras à la cheville, tu pourras faire mes lacets", "Les gagnants trouvent des moyens et les perdants des excuses", "Tu m’as vendu du rêve j’aimerais être remboursé !", "Je suis rapide comme le guépard !", "Je vais gagner, tu vas perdre... Faut pas chercher plus loin !", "Qui s'y frotte s'y pique"]
 
         if first%2 == 0: #Premier joueur
             power = 0
