@@ -77,8 +77,6 @@ class playTheGame():
                 cube = nextcube
             else :
                 game[cube] = power
-                # print("Dans le playethegame")
-                # print(np.resize(game, (5,5)))
                 return game
 
 class AI():
@@ -122,28 +120,32 @@ class AI():
         print("Searching for the best cube...")
         jeu = game.copy()
         choice = []
-
-        for i in self.firstList:
-            if jeu[i] == None or jeu[i] == power:
-                print("Try for", i)
-                choice.append(i)
-                y = jeu[i]
-                jeu[i] = power
-                
-                if self.win(power, jeu) == 5:
-                    print("I WIN avec", i)
-                    direction = self.bestDirection(power, jeu, i)
-                    return (i, direction)
-                else:
-                    print("Je gagne pas")
-                jeu[i] = y
-
-        # Bloquage de l'adversaire
-        print("Trying to block...")
         if power == 1:
             otherPower = 0
         else:
             otherPower = 1
+
+        for i in range(len(self.gagne)):
+            if self.checkList(power, jeu, self.gagne[i]) == 4:
+                print("On peut gagner !")
+                print("Check des lignes gagnates...")
+                for cube in self.firstList:
+                    for direction in self.firstDirections:
+                        if cube not in self.forbidden[direction] and game[cube] != otherPower:
+                            won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                            print('Won :', won) 
+                            if won == 5: 
+                                print("ON A GAGNE !")
+                                print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
+                                return (cube, direction)
+            else:
+                print("On ne peut pas ganger mtn")
+                for i in self.firstList:
+                    if jeu[i] == None or jeu[i] == power:
+                        choice.append(i)
+
+        # Bloquage de l'adversaire
+        print("Trying to block...")
 
         jeuReshape = np.resize(jeu, 25)
         ind = np.where(jeuReshape == otherPower)[0]
