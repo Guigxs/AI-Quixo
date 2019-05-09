@@ -28,4 +28,14 @@ def fun (a):
         else:
             return 1, 2, 3
 
+<<<<<<< HEAD
 print(fun(12))
+=======
+def salut(a, b):
+    if a + b == 2:
+        return a, b
+    else:
+        return False
+    
+print(salut(1, 3))
+>>>>>>> 5f2e8bf42b5843d3954f3efcc8b9a3e9b183a702
