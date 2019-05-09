@@ -21,4 +21,11 @@ gagne = [
                         [ 4,  9, 14, 19, 24],
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
-
+def commun(a, b):
+        l = []
+        for i in a:
+            if i in b:
+                l.append(i)
+        return l
+    
+print(commun([3], []))
