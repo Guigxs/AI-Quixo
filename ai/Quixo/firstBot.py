@@ -122,10 +122,10 @@ class AI():
             maxByLine.append(self.checkList(power, game, self.gagne[i]))
         
         maxi = max(maxByLine)
-        return maxByLine.index(maxi), maxi
+        return maxByLine.index(maxi), maxi, maxByLine
 
     def bestCube(self, power, game):
-        print("Searching for the best cube...")
+        print("Searching for the best cube..\n.")
         jeu = game.copy()
         choice = []
         if power == 1:
@@ -142,6 +142,7 @@ class AI():
                     for direction in self.firstDirections:
                         if cube not in self.forbidden[direction] and game[cube] != otherPower:
                             won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                            jeu = game.copy()
                             print('Won :', won) 
                             if won == 5: 
                                 print("ON A GAGNE !")
@@ -158,7 +159,7 @@ class AI():
 
         for i in range(len(self.gagne)):
             # Bloquage de l'adversaire
-            print("Trying to block...")
+            print("Trying to block...\n")
             x = self.checkList(otherPower, jeu, self.gagne[i])
             if x == 4:
                 if 0 <= i <= 4:
@@ -168,6 +169,7 @@ class AI():
                         for direction in ["N", "S"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                                jeu = game.copy()
                                 print('Won :', won) 
                                 if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
@@ -180,6 +182,7 @@ class AI():
                         for direction in ["E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                                jeu = game.copy()
                                 print('Won :', won)
                                 if won < x:
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
@@ -191,57 +194,61 @@ class AI():
                         for direction in ["N", "S", "E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                                jeu = game.copy()
                                 print('Won :', won)
                                 if won < x: 
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                     return (cube, direction)
-            elif x == 3:
-                if 0 <= i <= 4:
-                    print("N ou S")
-                    a = self.forbidden["N"].copy()
-                    for cube in (a + self.forbidden["S"]):
-                        for direction in ["N", "S"]:
-                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
-                                print('Won :', won) 
-                                if won < x: 
-                                    print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                                    return (cube, direction)
+            # elif x == 3:
+            #     if 0 <= i <= 4:
+            #         print("N ou S")
+            #         a = self.forbidden["N"].copy()
+            #         for cube in (a + self.forbidden["S"]):
+            #             for direction in ["N", "S"]:
+            #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
+            #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     print('Won :', won) 
+            #                     if won < x: 
+            #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
+            #                         return (cube, direction)
 
-                elif 5 <= i <= 9:
-                    print("E ou W")
-                    a = self.forbidden["W"].copy()
-                    for cube in (a + self.forbidden["E"]):
-                        for direction in ["E", "W"]:
-                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
-                                print('Won :', won)
-                                if won < x:
-                                    print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
-                                    return (cube, direction)
+            #     elif 5 <= i <= 9:
+            #         print("E ou W")
+            #         a = self.forbidden["W"].copy()
+            #         for cube in (a + self.forbidden["E"]):
+            #             for direction in ["E", "W"]:
+            #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
+            #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     print('Won :', won)
+            #                     if won < x:
+            #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
+            #                         return (cube, direction)
 
-                else:
-                    print("N ou S ou E ou W")
-                    for cube in (self.firstList):
-                        for direction in ["N", "S", "E", "W"]:
-                            if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                                won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
-                                print('Won :', won)
-                                if won < x: 
-                                    print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
-                                    return (cube, direction)
+            #     else:
+            #         print("N ou S ou E ou W")
+            #         for cube in (self.firstList):
+            #             for direction in ["N", "S", "E", "W"]:
+            #                 if cube not in self.forbidden[direction] and game[cube] != otherPower:
+            #                     won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+            #                     print('Won :', won)
+            #                     if won < x: 
+            #                         print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
+            #                         return (cube, direction)
 
         # Essaye de construire
-        print("Essaye de construire")
-        indexList, maxi = self.indexLongestList(power, jeu)
+        print("Essaye de construire\n")
+        indexList, maxi, liste = self.indexLongestList(power, jeu)
+        print("Liste des nombre de {} par ligne : {}".format(power, liste))
 
         if maxi != 0:
+            print("Maxi diff de 0")
             for cube in self.firstList:
                 for direction in self.firstDirections:
                     if cube not in self.forbidden[direction] and game[cube] != otherPower:
                         won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[indexList])
+                        jeu = game.copy()
                         print('Won :', won) 
-                        if won > x: 
+                        if won > maxi: 
                             print("La ligne se construit")
                             print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                             return (cube, direction)
