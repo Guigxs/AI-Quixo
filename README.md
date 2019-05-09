@@ -1,6 +1,6 @@
 # AI-Quixo
 
-## Strategy
+## Stratégie
 
 A chaque coups, l'IA a un chemin de réflexion : 
 
@@ -16,10 +16,10 @@ A chaque coups, l'IA a un chemin de réflexion :
     * Si 1er coup : Mouvement alléatoire
     * Sinon : Tentative de développement de la plus grande chaine de symbole
 
-## Location   
+## Localisation   
 
-The python script's location : `/ai/smartBot.py`
+TLe script python se trouve dans: `/ai/maximaxBot.py`
 
-## Students
+## Etudiants
 
 Guillaume Caestecker "*@Arkhesus*" (17036) & Guillaume Bouillon "*@Guigxs*" (17076)
