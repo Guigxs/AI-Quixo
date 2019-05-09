@@ -21,5 +21,11 @@ gagne = [
                         [ 4,  9, 14, 19, 24],
                         [ 0,  6, 12, 18, 24],
                         [ 4,  8, 12, 16, 20]]
+def fun (a):
+    for i in [6,  7, 8]:
+        if i%5 == 0:
+            return i
+        else:
+            return 1, 2, 3
 
-print(int(13/5))
+print(fun(12))
