@@ -81,7 +81,7 @@ class playTheGame():
         self.forbidden = {'E':[4, 9, 14, 19, 24], 'W':[0, 5, 10, 15, 20], 'N':[0, 1, 2, 3, 4], 'S':[20, 21, 22, 23, 24]}
     
     def move(self, game, cube, dir, power):
-        print("Bouge le cube : {} par le {}".format(cube, dir))
+        print("\nBouge le cube : {} par le {}".format(cube, dir))
         while cube >= 0:
             if cube not in self.forbidden[dir]:
                 print("Moving cube :{}...".format(cube))
@@ -154,11 +154,12 @@ class AI():
                     if j in self.firstList:
                         if jeu[j] == None or jeu[j] == power:
                             choice.append(j)
+        print("Création d'une liste de choix... :", choice)
         return choice
 
 
     def bestCube(self, power, game):
-        print("Searching for the best cube...\n")
+        print("\n\nDebut de l'ia : recherche du meilleur cube...\n\n")
         jeu = game.copy()
         if power == 1:
             otherPower = 0
@@ -167,18 +168,19 @@ class AI():
         
         choice = self.makeChoice(power, jeu)
 
-
         # Gagne quand ligne de 4
+        print("\nNiveau de recherche: 1\n")
+        print("Essaye de voir si il y a 4 cubes alignés...")
         for i in range(len(self.gagne)):
             if self.checkList(power, jeu, self.gagne[i]) == 4:
-                print("On peut gagner ! --> niveau 1")
+                print("\nOn peut gagner !")
                 print("Check des lignes gagnates...")
                 for cube in self.firstList:
                     for direction in self.firstDirections:
                         if cube not in self.forbidden[direction] and game[cube] != otherPower:
                             won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                             jeu = game.copy()
-                            print('Won :', won)
+                            print('Cubes alignés :', won)
                             #Niveau 1 
                             if won == 5: 
                                 print("ON A GAGNE !")
@@ -186,31 +188,39 @@ class AI():
                                 return (cube, direction, "J'ai gagné grand fou")
         
         cste = 0   
-        print("Impossible de gagner --> niveau 2")
+        print("\nImpossible de gagner, niveau de recherche: 2\n")
         if cste == 0:
             #Niveau 2
-            if self.blocage(power, game) == False:
+            niveau = self.blocage(power, game)
+            if niveau == False:
                 cste += 1
-                print("Impossible de bloquer --> niveau 3")
+                print("\nImpossible de bloquer, niveau de recherche: 3\n")
             else:
-                cube, direction, phrase = self.blocage(power, game)
+                cube, direction, phrase = niveau
                 return cube, direction, phrase
+
         if cste == 1:
             #Niveau 3
-            if self.notWin(power, game) == False:
+            niveau = self.notWin(power, game)
+            if niveau == False:
                 cste += 1
-                print("Impossible de bouger pour gagner --> niveau 4")
+                print("\nImpossible de se rapprocher de la victoire, niveau de recherche: 4\n")
             else:
-                cube, direction, phrase = self.notWin(power, game)
+                cube, direction, phrase = niveau
                 return cube, direction, phrase 
 
         if cste == 2:
             #Niveau 4
-            if self.build(power, game, choice) == False:
-                print("Niveau 4 false ---ECHEC---")
+            niveau = self.build(power, game, choice)
+            if niveau == False:
+                print("\nImpossible de jouer une stratiégie!\n")
+                cste += 1
             else:
-                cube, direction, phrase = self.build(power, game, choice)
-                return cube, direction, phrase                       
+                cube, direction, phrase = niveau
+                return cube, direction, phrase    
+
+        cube, direction, phrase = self.aleatoire(choice, power, game)
+        return cube, direction, phrase
 
     def notWin(self, power, game):
         jeu = game.copy()
@@ -219,59 +229,55 @@ class AI():
             otherPower = 0
         else:
             otherPower = 1
-        print("Entre dans le notWin")
+
+        print("Tentative de se rapprocher de la victoire...")
         for i in range(len(self.gagne)):
             if self.checkList(power, jeu, self.gagne[i]) == 4:
                 trou = self.giveHole(power, jeu, self.gagne[i])
                 if 0 <= i <= 4:
                     newCube = trou%5
-                    print("Il faut bouger N, S, le cube :", trou)
+                    print("Il faut bouger par le N ou le S, le cube :", trou)
                     if jeu[self.forbidden['S'][newCube]] != otherPower and jeu[self.forbidden['N'][newCube]] != otherPower:
                         if i == 1:
-                            print("Ta mere")
-                            return self.forbidden['S'][newCube], "N", "Ta mere"
+                            return self.forbidden['S'][newCube], "N", "Bien essayé"
                         else:
-                            print("Ta grand mere")
-                            return self.forbidden['N'][newCube], "S", "Ta grand mere"
+                            return self.forbidden['N'][newCube], "S", "Bien essayé"
                     else:
                         z = 0
-                        print("z = 0 --> while")
                         while z == 0:
-                            print("pas possible de trouver le cube... Choix aléatoire")
-                            cube, direction, phrase = self.aleatoire(choice, power, jeu)
-                            win = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
-                            jeu = game.copy()
-                            if win == won:
-                                print("Trouvé :", cube, direction)
-                                z = 1
-                                return cube, direction, phrase
-
-                elif 5 <= i <= 9:
-                    print("Il faut bouger E, W, le cube :", trou)
-                    newCube = int(trou/5)
-                    if jeu[self.forbidden['W'][newCube]] != otherPower and jeu[self.forbidden['E'][newCube]] != otherPower:
-                        if i == 6:
-                            print("Ton pere")
-                            return self.forbidden['E'][newCube], "W", "Ton pere"
-                        else:
-                            print("Ton grand pere")
-                            return self.forbidden['W'][newCube], "E", "Ton grand pere"
-                    else:
-                        z = 0
-                        print("z = 0 --> while")
-                        while z == 0:
-                            print("pas possible de trouver le cube... Choix aléatoire")
+                            print("Impossible de trouver le bon cube et la bonne direction !")
+                            print("Génération d'un choix aléatoire qui ne casse pas notre jeu...")
                             cube, direction, phrase = self.aleatoire(choice, power, jeu)
                             won = self.indexLongestList(power, jeu)[1]
                             win = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                             jeu = game.copy()
                             if win == won:
-                                print("Trouvé :", cube, direction)
+                                print("Cube et direction trouvés :", cube, direction)
                                 z = 1
                                 return cube, direction, phrase
-                
-            print("Sort du notWin")
-            return False
+
+                elif 5 <= i <= 9:
+                    print("Il faut bouger par l'E ou l'W, le cube :", trou)
+                    newCube = int(trou/5)
+                    if jeu[self.forbidden['W'][newCube]] != otherPower and jeu[self.forbidden['E'][newCube]] != otherPower:
+                        if i == 6:
+                            return self.forbidden['E'][newCube], "W", "Bien essayé"
+                        else:
+                            return self.forbidden['W'][newCube], "E", "Bien essayé"
+                    else:
+                        z = 0
+                        while z == 0:
+                            print("Impossible de trouver le bon cube et la bonne direction !")
+                            cube, direction, phrase = self.aleatoire(choice, power, jeu)
+                            won = self.indexLongestList(power, jeu)[1]
+                            win = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                            jeu = game.copy()
+                            if win == won:
+                                print("Cube et direction trouvés :", cube, direction)
+                                z = 1
+                                return cube, direction, phrase
+
+        return False
     
     def blocage(self, power, game):
         jeu = game.copy()
@@ -281,48 +287,52 @@ class AI():
             otherPower = 1
 
         # Bloquage de l'adversaire
+        print("Tentative de blocage...")
         for i in range(len(self.gagne)):
-            print("Trying to block...\n")
             x = self.checkList(otherPower, jeu, self.gagne[i])
             if x == 4:
+                print("L'adversaire a une suide te 4 cubes!")
                 if 0 <= i <= 4:
-                    print("N ou S")
+                    print("Il faut bouger par le N ou le S")
                     a = self.forbidden["N"].copy()
                     for cube in (a + self.forbidden["S"]):
                         for direction in ["N", "S"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                                 jeu = game.copy()
-                                print('Won :', won) 
+                                print('Cubes alignés :', won) 
                                 if won < x: 
+                                    print("Blocage réussi")
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                     return (cube, direction, None)
 
                     return False                    
 
                 elif 5 <= i <= 9:
-                    print("E ou W")
+                    print("Il faut bouger par l'E ou l'W")
                     a = self.forbidden["W"].copy()
                     for cube in (a + self.forbidden["E"]):
                         for direction in ["E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                                 jeu = game.copy()
-                                print('Won :', won)
+                                print('Cubes alignés :', won)
                                 if won < x:
+                                    print("Blocage réussi")
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction)) 
                                     return (cube, direction, None)
 
                     return False
                 else:
-                    print("N ou S ou E ou W")
+                    print("Il faut bouger par le N ou le S ou l'E ou l'W")
                     for cube in (self.firstList):
                         for direction in ["N", "S", "E", "W"]:
                             if cube not in self.forbidden[direction] and game[cube] != otherPower:
                                 won = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                                 jeu = game.copy()
-                                print('Won :', won)
+                                print('Cubes alignés :', won)
                                 if won < x: 
+                                    print("Blocage réussi")
                                     print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                     return (cube, direction, None)
 
@@ -369,9 +379,7 @@ class AI():
             #                         return (cube, direction)
             #         return False
 
-            
-            print("Pas poss to block...")
-            return False
+        return False
 
     def build(self, power, game, choice): # Essaye de construire
         jeu = game.copy()
@@ -380,48 +388,53 @@ class AI():
         else:
             otherPower = 1
 
-        print("Essaye de construire\n")
+        print("Tentative de construction d'une suite...")
         indexList, maxi, liste = self.indexLongestList(power, jeu)
-        print("Liste des nombre de {} par ligne : {}".format(power, liste))
+        print("\nListe des nombre de {} par ligne : {}".format(power, liste))
 
         if maxi != 0:
-            print("Maxi different de zero")
+            print("Il y a un maximum !")
             for cube in self.firstList:
                 for direction in self.firstDirections:
                     if cube not in self.forbidden[direction] and game[cube] != otherPower:
                         won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[indexList])
                         jeu = game.copy()
-                        print('Won :', won) 
+                        print('Cubes alignés :', won) 
                         if won > maxi: 
-                            print("La ligne se construit")
+                            print("\nConstruction de la ligne...")
                             print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                             return (cube, direction, None)
-            z = 0
-            while z != 1:
-                print("pas possible de trouver le cube... Choix aléatoire")
+            z = 1
+            print("z")
+            while z != 0:
+                z += 1
+                print("Imossible de trouver un cube !")
                 cube, direction, phrase = self.aleatoire(choice, power, jeu)
                 win = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[indexList])
                 jeu = game.copy()
                 if win == won:
-                    print("Trouvé :", cube, direction)
-                    z = 1
+                    print("Cube est direction trouvés :", cube, direction)
+                    z = 0
                     return cube, direction, phrase
-
+                if z == 500:
+                    print("Ca tourne en boucle!")
+                    z = 0
+                    return False
 
         else:
-            cube, direction, phrase = self.aleatoire(choice, power, game)
-            return cube, direction, phrase
-
+            print("Pas de maximum, le jeu vient de commencer !")
+            return False
 
     def aleatoire(self, choice, power, game):
+        print("Generation d'un coup aléatoire...")
         jeu = game.copy()
+        print("Choix dans la liste : ", choice)
         cube = random.choice(choice)
         if game[cube] == power or game[cube] == None:
-            print("Random cube...", cube)
+            print("Choix d'un cube... :", cube)
             direction = self.bestDirection(power, jeu, cube)
-            print("Chox d'une direction random en fonction du cube :", direction)
+            print("Choix d'une direction en fonction du cube... :", direction)
             return (cube, direction, "Coup aléatoire...")
-
 
     def bestDirection(self, power, game, cube):
         print("Searching for the best direction...")
@@ -431,15 +444,14 @@ class AI():
         for i in self.firstDirections:
             if cube not in self.forbidden[i]:
                 choice.append(i)
-                print("TEST\n")
                 newJeu = playTheGame().move(jeu, cube, i, power)
 
                 if self.win(power, newJeu) == 5:
-                    print("I CHOOSE MY DIRECTION !")
+                    print("Direction trouvée !")
                     return i
                 
                 else: 
-                    print("Pas de best direction")
+                    print("Pas de direction privilégiée !")
                     jeu = np.copy(game)
 
         return random.choice(choice)
@@ -450,7 +462,6 @@ class AI():
             if i in b:
                 l.append(i)
         return l
-
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
