@@ -178,14 +178,17 @@ class AI():
                 for cube in self.firstList:
                     for direction in self.firstDirections:
                         if cube not in self.forbidden[direction] and game[cube] != otherPower:
+                            otherWon = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                             won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                             jeu = game.copy()
                             print('Cubes alignés :', won)
                             #Niveau 1 
-                            if won == 5: 
+                            if won == 5 and otherWon != 5: 
                                 print("ON A GAGNE !")
                                 print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                                 return (cube, direction, "J'ai gagné grand fou")
+                            if otherWon == 5:
+                                print("!!!!!!!!!!!!!!!!!!!!!!Attention, ce coup peut avantager l'autre!!!!!!!!!!!!!!!!!!!!!!")
         
         cste = 0   
         print("\nImpossible de gagner, niveau de recherche: 2\n")
