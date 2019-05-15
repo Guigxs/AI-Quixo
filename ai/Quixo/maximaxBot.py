@@ -178,8 +178,8 @@ class AI():
                 for cube in self.firstList:
                     for direction in self.firstDirections:
                         if cube not in self.forbidden[direction] and game[cube] != otherPower:
-                            otherWon = self.checkList(otherPower, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
                             won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[i])
+                            otherWon = self.checkList(otherPower, jeu, self.gagne[i])
                             jeu = game.copy()
                             print('Cubes alignés :', won)
                             #Niveau 1 
@@ -227,7 +227,8 @@ class AI():
 
     def notWin(self, power, game):
         jeu = game.copy()
-        choice = []
+        choice = self.makeChoice(power, jeu)
+
         if power == 1:
             otherPower = 0
         else:
@@ -401,9 +402,10 @@ class AI():
                 for direction in self.firstDirections:
                     if cube not in self.forbidden[direction] and game[cube] != otherPower:
                         won = self.checkList(power, playTheGame().move(jeu, cube, direction, power), self.gagne[indexList])
+                        otherWon = self.checkList(otherPower, jeu, self.gagne[indexList])
                         jeu = game.copy()
                         print('Cubes alignés :', won) 
-                        if won > maxi: 
+                        if won > maxi and otherWon != 4: 
                             print("\nConstruction de la ligne...")
                             print("Cube et dicrection trouvés : {} par {}".format(cube, direction))
                             return (cube, direction, None)
